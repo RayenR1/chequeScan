@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#0ea5e9"         # sky blue for buttons and accents
+backgroundColor = "#e0f7ff"      # soft sky blue background
+secondaryBackgroundColor = "#ffffff"  # white panels
+textColor = "#1f2937"            # dark slate gray text
+font = "sans serif"

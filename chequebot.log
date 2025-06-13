@@ -1,0 +1,69 @@
+2025-06-14 00:00:20,530 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:00:20,608 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:00:20,625 - INFO - Transaction saved successfully: 01 006 035112 0019 58 12
+2025-06-14 00:00:20,626 - INFO - Transaction saved to database successfully
+2025-06-14 00:00:20,626 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:00:38,055 - WARNING - Empty or invalid RIB: Not Detected
+2025-06-14 00:00:38,062 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:08:35,544 - WARNING - Empty or invalid RIB: Not Detected
+2025-06-14 00:08:35,549 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:08:50,885 - ERROR - Extraction error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-pro"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-pro"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+  quota_id: "GenerateContentInputTokensPerModelPerMinute-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-pro"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 4
+}
+]
+2025-06-14 00:09:39,651 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:09:39,680 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:09:39,694 - INFO - Transaction saved successfully: 01 006 035112 0019 58 12
+2025-06-14 00:09:39,694 - INFO - Transaction saved to database successfully
+2025-06-14 00:09:39,694 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:13:07,933 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:13:07,951 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:13:07,960 - INFO - Transaction saved successfully: 01 006 035112 0019 58 12
+2025-06-14 00:13:07,960 - INFO - Transaction saved to database successfully
+2025-06-14 00:13:07,960 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:13:17,481 - WARNING - Empty or invalid RIB: Not Detected
+2025-06-14 00:13:17,484 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:22:41,025 - WARNING - Empty or invalid RIB: Not Detected
+2025-06-14 00:22:41,027 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-14 00:24:16,317 - WARNING - Empty or invalid RIB: Not Detected
+2025-06-14 00:24:16,321 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)

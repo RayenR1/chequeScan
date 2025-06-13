@@ -86,7 +86,6 @@ def query_llama(user_message):
     )
     return response['message']['content']
 
-
 # Dictionnaire des codes bancaires
 BANK_CODES = {
     "01": "Arab Tunisian Bank (ATB)",
@@ -142,19 +141,6 @@ def safe_float(val):
     except (ValueError, AttributeError):
         return 0.0
 
-def clear_database():
-    try:
-        conn = sqlite3.connect("transactions.db")
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM transactions")
-        conn.commit()
-        conn.close()
-        logging.info("Database cleared successfully")
-        return True
-    except Exception as e:
-        logging.error(f"Error clearing database: {str(e)}")
-        return False
-    
 def save_transaction_to_db(data):
     try:
         # Get RIB1 with multiple possible keys
@@ -806,21 +792,6 @@ elif st.session_state.nav_page == "Contact":
 elif st.session_state.nav_page == "Transactions":
     st.markdown("## 📊 Transactions History")
     
-    # Add clear database button at the top
-    if st.button("🗑️ Vider la Base de Données", type="primary", 
-                help="Cette action supprimera définitivement toutes les transactions"):
-        try:
-            conn = sqlite3.connect("transactions.db")
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM transactions")
-            conn.commit()
-            conn.close()
-            st.success("Base de données vidée avec succès!")
-            st.rerun()  # Refresh the page to show empty state
-        except Exception as e:
-            st.error(f"Erreur lors de la suppression des données: {str(e)}")
-            logging.error(f"Error clearing database: {str(e)}")
-    
     # Connect to database to show all transactions
     try:
         conn = sqlite3.connect("transactions.db")
@@ -871,13 +842,14 @@ elif st.session_state.nav_page == "Transactions":
                 </div>
                 """, unsafe_allow_html=True)
         else:
-            st.info("Aucune transaction trouvée dans la base de données.")
+            st.info("No transactions found in the database.")
     except sqlite3.Error as e:
-        st.error(f"Erreur de base de données: {str(e)}")
+        st.error(f"Database error: {str(e)}")
         logging.error(f"Database error: {str(e)}")
     except Exception as e:
-        st.error(f"Erreur lors du chargement des transactions: {str(e)}")
+        st.error(f"Error loading transactions: {str(e)}")
         logging.error(f"Error loading transactions: {str(e)}")
+
 st.markdown("""
 <div class="footer">
     Made with 💡 by Ons

@@ -1,0 +1,177 @@
+2025-06-13 23:35:41,154 - DEBUG - Invalid RIB input: Not Detected, Caller:   File "C:\Users\jlassi\Desktop\Ons\ChequeScan\app.py", line 165, in save_transaction_to_db
+    bank = get_bank_from_rib(data.get("rib1", "Not Detected"))
+
+2025-06-13 23:35:41,164 - DEBUG - Invalid RIB input: Not Detected, Caller:   File "C:\Users\jlassi\Desktop\Ons\ChequeScan\app.py", line 195, in analyze_transaction
+    bank = get_bank_from_rib(rib1)
+
+2025-06-13 23:44:33,160 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:33,160 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:44:33,160 - DEBUG - STREAM b'IDAT' 54 8192
+2025-06-13 23:44:33,163 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:33,163 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:44:33,163 - DEBUG - STREAM b'gAMA' 54 4
+2025-06-13 23:44:33,163 - DEBUG - STREAM b'pHYs' 70 9
+2025-06-13 23:44:33,163 - DEBUG - STREAM b'IDAT' 91 17142
+2025-06-13 23:44:33,216 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:33,216 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:44:33,216 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:33,216 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:44:33,240 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:33,240 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:44:33,240 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:33,240 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:44:38,013 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:38,013 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:44:38,013 - DEBUG - STREAM b'IDAT' 54 8192
+2025-06-13 23:44:38,013 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:38,013 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:44:38,013 - DEBUG - STREAM b'gAMA' 54 4
+2025-06-13 23:44:38,014 - DEBUG - STREAM b'pHYs' 70 9
+2025-06-13 23:44:38,014 - DEBUG - STREAM b'IDAT' 91 17142
+2025-06-13 23:44:38,066 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:38,066 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:44:38,066 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:38,067 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:44:38,085 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:38,085 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:44:38,085 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:44:38,085 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:44:38,088 - DEBUG - Importing AvifImagePlugin
+2025-06-13 23:44:38,090 - DEBUG - Importing BlpImagePlugin
+2025-06-13 23:44:38,092 - DEBUG - Importing BmpImagePlugin
+2025-06-13 23:44:38,092 - DEBUG - Importing BufrStubImagePlugin
+2025-06-13 23:44:38,094 - DEBUG - Importing CurImagePlugin
+2025-06-13 23:44:38,095 - DEBUG - Importing DcxImagePlugin
+2025-06-13 23:44:38,098 - DEBUG - Importing DdsImagePlugin
+2025-06-13 23:44:38,104 - DEBUG - Importing EpsImagePlugin
+2025-06-13 23:44:38,105 - DEBUG - Importing FitsImagePlugin
+2025-06-13 23:44:38,106 - DEBUG - Importing FliImagePlugin
+2025-06-13 23:44:38,107 - DEBUG - Importing FpxImagePlugin
+2025-06-13 23:44:38,108 - DEBUG - Image: failed to import FpxImagePlugin: No module named 'olefile'
+2025-06-13 23:44:38,108 - DEBUG - Importing FtexImagePlugin
+2025-06-13 23:44:38,109 - DEBUG - Importing GbrImagePlugin
+2025-06-13 23:44:38,109 - DEBUG - Importing GifImagePlugin
+2025-06-13 23:44:38,109 - DEBUG - Importing GribStubImagePlugin
+2025-06-13 23:44:38,110 - DEBUG - Importing Hdf5StubImagePlugin
+2025-06-13 23:44:38,111 - DEBUG - Importing IcnsImagePlugin
+2025-06-13 23:44:38,113 - DEBUG - Importing IcoImagePlugin
+2025-06-13 23:44:38,114 - DEBUG - Importing ImImagePlugin
+2025-06-13 23:44:38,115 - DEBUG - Importing ImtImagePlugin
+2025-06-13 23:44:38,116 - DEBUG - Importing IptcImagePlugin
+2025-06-13 23:44:38,117 - DEBUG - Importing JpegImagePlugin
+2025-06-13 23:44:38,117 - DEBUG - Importing Jpeg2KImagePlugin
+2025-06-13 23:44:38,117 - DEBUG - Importing McIdasImagePlugin
+2025-06-13 23:44:38,118 - DEBUG - Importing MicImagePlugin
+2025-06-13 23:44:38,120 - DEBUG - Image: failed to import MicImagePlugin: No module named 'olefile'
+2025-06-13 23:44:38,120 - DEBUG - Importing MpegImagePlugin
+2025-06-13 23:44:38,121 - DEBUG - Importing MpoImagePlugin
+2025-06-13 23:44:38,125 - DEBUG - Importing MspImagePlugin
+2025-06-13 23:44:38,127 - DEBUG - Importing PalmImagePlugin
+2025-06-13 23:44:38,129 - DEBUG - Importing PcdImagePlugin
+2025-06-13 23:44:38,130 - DEBUG - Importing PcxImagePlugin
+2025-06-13 23:44:38,130 - DEBUG - Importing PdfImagePlugin
+2025-06-13 23:44:38,141 - DEBUG - Importing PixarImagePlugin
+2025-06-13 23:44:38,142 - DEBUG - Importing PngImagePlugin
+2025-06-13 23:44:38,142 - DEBUG - Importing PpmImagePlugin
+2025-06-13 23:44:38,142 - DEBUG - Importing PsdImagePlugin
+2025-06-13 23:44:38,143 - DEBUG - Importing QoiImagePlugin
+2025-06-13 23:44:38,144 - DEBUG - Importing SgiImagePlugin
+2025-06-13 23:44:38,145 - DEBUG - Importing SpiderImagePlugin
+2025-06-13 23:44:38,146 - DEBUG - Importing SunImagePlugin
+2025-06-13 23:44:38,147 - DEBUG - Importing TgaImagePlugin
+2025-06-13 23:44:38,148 - DEBUG - Importing TiffImagePlugin
+2025-06-13 23:44:38,148 - DEBUG - Importing WebPImagePlugin
+2025-06-13 23:44:38,150 - DEBUG - Importing WmfImagePlugin
+2025-06-13 23:44:38,151 - DEBUG - Importing XbmImagePlugin
+2025-06-13 23:44:38,152 - DEBUG - Importing XpmImagePlugin
+2025-06-13 23:44:38,153 - DEBUG - Importing XVThumbImagePlugin
+2025-06-13 23:44:40,421 - DEBUG - Raw Gemini response: ```json
+{
+  "Rib1": "01 006 035112 0019 58 12",
+  "Rib2": "01 006 035112 0018 16",
+  "nom": "ASSOCIATION DE DEVELOPPEMENT INTEGR",
+  "nomreciver": "Ons Hasni",
+  "plafond": "1000 DT",
+  "num_cheque": "0501069",
+  "montant": "850.03",
+  "date": "31/08/2025"
+}
+```
+2025-06-13 23:44:40,422 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date']
+2025-06-13 23:44:40,423 - DEBUG - get_rib_from_data: Found RIB for key 'Rib1': 01 006 035112 0019 58 12
+2025-06-13 23:44:40,423 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date']
+2025-06-13 23:44:40,423 - DEBUG - get_rib_from_data: Found RIB for key 'Rib2': 01 006 035112 0018 16
+2025-06-13 23:44:40,480 - DEBUG - save_transaction_to_db: Input data keys: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:44:40,480 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:44:40,480 - DEBUG - get_rib_from_data: Found RIB for key 'rib1': 01 006 035112 0019 58 12
+2025-06-13 23:44:40,480 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:44:40,480 - DEBUG - get_rib_from_data: Found RIB for key 'rib2': 01 006 035112 0018 16
+2025-06-13 23:44:40,480 - DEBUG - save_transaction_to_db: rib1 = 01 006 035112 0019 58 12, rib2 = 01 006 035112 0018 16
+2025-06-13 23:44:40,480 - DEBUG - RIB: 01 006 035112 0019 58 12, Stringified: 0100603511200195812, Cleaned: 0100603511200195812, Prefix: 01, Bank: Arab Tunisian Bank (ATB)
+2025-06-13 23:44:40,480 - DEBUG - save_transaction_to_db: Bank for rib1 = Arab Tunisian Bank (ATB)
+2025-06-13 23:44:40,490 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:44:40,491 - DEBUG - get_rib_from_data: Found RIB for key 'rib1': 01 006 035112 0019 58 12
+2025-06-13 23:44:40,491 - DEBUG - RIB: 01 006 035112 0019 58 12, Stringified: 0100603511200195812, Cleaned: 0100603511200195812, Prefix: 01, Bank: Arab Tunisian Bank (ATB)
+2025-06-13 23:44:49,558 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img', 'analysis']
+2025-06-13 23:44:49,558 - DEBUG - get_rib_from_data: Found RIB for key 'rib1': 01 006 035112 0019 58 12
+2025-06-13 23:44:49,559 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img', 'analysis']
+2025-06-13 23:44:49,559 - DEBUG - get_rib_from_data: Found RIB for key 'rib2': 01 006 035112 0018 16
+2025-06-13 23:45:20,890 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:20,890 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:45:20,890 - DEBUG - STREAM b'IDAT' 54 8192
+2025-06-13 23:45:20,890 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:20,890 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:45:20,890 - DEBUG - STREAM b'gAMA' 54 4
+2025-06-13 23:45:20,890 - DEBUG - STREAM b'pHYs' 70 9
+2025-06-13 23:45:20,891 - DEBUG - STREAM b'IDAT' 91 17142
+2025-06-13 23:45:20,924 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:20,924 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:45:20,924 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:20,924 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:45:20,935 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:20,936 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:45:20,936 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:20,936 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:45:23,307 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:23,308 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:45:23,308 - DEBUG - STREAM b'IDAT' 54 8192
+2025-06-13 23:45:23,308 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:23,308 - DEBUG - STREAM b'sRGB' 41 1
+2025-06-13 23:45:23,308 - DEBUG - STREAM b'gAMA' 54 4
+2025-06-13 23:45:23,309 - DEBUG - STREAM b'pHYs' 70 9
+2025-06-13 23:45:23,309 - DEBUG - STREAM b'IDAT' 91 17142
+2025-06-13 23:45:23,355 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:23,355 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:45:23,355 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:23,355 - DEBUG - STREAM b'IDAT' 41 65536
+2025-06-13 23:45:23,366 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:23,366 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:45:23,366 - DEBUG - STREAM b'IHDR' 16 13
+2025-06-13 23:45:23,366 - DEBUG - STREAM b'IDAT' 41 15178
+2025-06-13 23:45:25,300 - DEBUG - Raw Gemini response: ```json
+{
+  "Rib1": "01 006 035112 0019 58 12",
+  "Rib2": "01 006 035112 0018 46",
+  "nom": "ASSOCIATION DE DEVELOPPEMENT INTEGR",
+  "nomreciver": "Ons Hasni",
+  "plafond": "1000 DT",
+  "num_cheque": "0501069",
+  "montant": "850.00",
+  "date": "31/08/2025"
+}
+```
+2025-06-13 23:45:25,301 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date']
+2025-06-13 23:45:25,302 - DEBUG - get_rib_from_data: Found RIB for key 'Rib1': 01 006 035112 0019 58 12
+2025-06-13 23:45:25,302 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date']
+2025-06-13 23:45:25,302 - DEBUG - get_rib_from_data: Found RIB for key 'Rib2': 01 006 035112 0018 46
+2025-06-13 23:45:25,318 - DEBUG - save_transaction_to_db: Input data keys: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:45:25,318 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:45:25,318 - DEBUG - get_rib_from_data: Found RIB for key 'rib1': 01 006 035112 0019 58 12
+2025-06-13 23:45:25,318 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:45:25,318 - DEBUG - get_rib_from_data: Found RIB for key 'rib2': 01 006 035112 0018 46
+2025-06-13 23:45:25,318 - DEBUG - save_transaction_to_db: rib1 = 01 006 035112 0019 58 12, rib2 = 01 006 035112 0018 46
+2025-06-13 23:45:25,318 - DEBUG - RIB: 01 006 035112 0019 58 12, Stringified: 0100603511200195812, Cleaned: 0100603511200195812, Prefix: 01, Bank: Arab Tunisian Bank (ATB)
+2025-06-13 23:45:25,318 - DEBUG - save_transaction_to_db: Bank for rib1 = Arab Tunisian Bank (ATB)
+2025-06-13 23:45:25,326 - DEBUG - get_rib_from_data: Data keys available: ['Rib1', 'Rib2', 'nom', 'nomreciver', 'plafond', 'num_cheque', 'montant', 'date', 'rib1', 'rib2', 'front_img', 'back_img', 'sign_img']
+2025-06-13 23:45:25,327 - DEBUG - get_rib_from_data: Found RIB for key 'rib1': 01 006 035112 0019 58 12
+2025-06-13 23:45:25,327 - DEBUG - RIB: 01 006 035112 0019 58 12, Stringified: 0100603511200195812, Cleaned: 0100603511200195812, Prefix: 01, Bank: Arab Tunisian Bank (ATB)
