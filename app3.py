@@ -32,7 +32,7 @@ model = genai.GenerativeModel(model_name="gemini-2.0-flash")
 
 # System prompt for the chatbot
 system_prompt = """
-You are ChequeBot, a friendly and helpful assistant designed to assist with the Cheque Book AI platform and analyze cheque transactions. I'm here to make your experience smooth and informative—it's 10:47 PM CET on Monday, June 23, 2025, and I'm ready to assist!
+You are ChequeBot, a friendly and helpful assistant designed to assist with the Cheque Book AI platform and analyze cheque transactions. I'm here to make your experience smooth and informative—it's 01:08 PM CET on Tuesday, June 24, 2025, and I'm ready to assist!
 
 Here is what the platform does:
 - 📤 Upload Cheque Images (front and back or ZIP batch)
@@ -48,13 +48,14 @@ Here is what the platform does:
   - Plafond > 10,000 and Amount > 50% of Plafond (high_plafond and high_amount_ratio).
   - Periodic transactions (>1) with Amount > 5,000 (periodic_high_transactions).
 - **Fraud Risk**: Marked as "Yes" if:
+  - Amount > Plafond (amount_exceeds_plafond). This triggers a red alert with the message: "The amount exceeds the plafond."
   - Amount > 90% of Plafond (near_plafond).
   - Plafond > 100,000, Amount < 1,000, and >5 transactions in history (small_amounts_high_plafond).
   - Successive cheques (>1) from the same sender with the same RIBs and consecutive cheque numbers (difference of +1 or -1) with increasing amounts (successive_cheques_same_sender_increasing).
 - Other factors (e.g., successive_cheques_same_sender) may influence the analysis.
 
 ### Capabilities:
-- Respond warmly to greetings (e.g., "Hi!" → "Hi! How can I help you today at 10:47 PM CET on June 23, 2025?", "Hello!" → "Hello! What can I do for you this evening?").
+- Respond warmly to greetings (e.g., "Hi!" → "Hi! How can I help you today at 01:08 PM CET on June 24, 2025?", "Hello!" → "Hello! What can I do for you this afternoon?").
 - Answer questions about how the platform works, its benefits, or technical capabilities.
 - Analyze transaction history stored in the SQLite database ("transactions.db") and the current session data.
 - Provide details on specific cheques (e.g., RIBs, amounts, dates, plafond) based on the data available.
@@ -75,8 +76,8 @@ def query_llama(user_message):
     history = cursor.fetchall()
     conn.close()
     
-    history_context = "Transaction History:\n" + "\n".join([f"- Cheque {row[1]}: RIB1={row[0]}, RIB2={row[2]}, Sender={row[3]}, Receiver={row[4]}, Amount={row[6]}, Plafond={row[5]}, Date={row[7]}, Bank={row[8]}" for row in history]) + "\n"
-    history_context += "Current Session Data:\n" + "\n".join([f"- Cheque {c.get('num_cheque', 'N/A')}: RIB1={c.get('rib1', 'N/A')}, RIB2={c.get('rib2', 'N/A')}, Sender={c.get('nom', 'N/A')}, Receiver={c.get('nomreciver', 'N/A')}, Amount={c.get('montant', 'N/A')}, Plafond={c.get('plafond', 'N/A')}, Date={c.get('date', 'N/A')}, Analysis={c.get('analysis', {})}" for c in st.session_state.customer])
+    history_context = "Transaction History:\n" + "\n".join([f"- Cheque {row[1]}: RIB1={row[0]}, RIB2={row[2]}, Sender={row[3]}, Receiver={row[4]}, Amount={row[6]}, Plafond={row[5]}, Date={row[7]}, Bank={row[8]}"])
+    history_context += "\nCurrent Session Data:\n" + "\n".join([f"- Cheque {c.get('num_cheque', '')}: RIB1={c.get('rib1', '')}, RIB2={c.get('rib2', '')}, Sender={c.get('nom', '')}, Receiver={c.get('nomreciver', '')}, Amount={c.get('montant', '')}, Plafond={c.get('plafond', '')}, Date={c.get('date', '')}, Analysis={c.get('analysis', {})}" for c in st.session_state.contact])
     
     # Combine system prompt with history context and user message
     full_prompt = f"{system_prompt}\n{history_context}\nUser Message: {user_message}"
@@ -92,7 +93,7 @@ BANK_CODES = {
     "03": "Banque de Tunisie (BT)",
     "04": "Attijari Bank",
     "05": "Banque Tuniso-Koweitienne (BTK)",
-    "06": "Banque Tuniso-Libyenne (BTL)",
+    "06": "Banque Tuniso-Libyeene (BTL)",
     "07": "Amen Bank",
     "08": "Banque Internationale Arabe de Tunisie (BIAT)",
     "09": "Banque Zitouna",
@@ -266,14 +267,15 @@ def migrate_database():
 
 def analyze_transaction(data):
     result = {
-        "potential_customer": False, 
-        "fraud_risk": False, 
+        "potential_customer": False,
+        "fraud_risk": False,
         "analysis": {
             "bank": "Unknown",
             "high_plafond": False,
             "high_amount_ratio": False,
             "periodic_high_transactions": False,
             "near_plafond": False,
+            "amount_exceeds_plafond": False,  # New flag for amount > plafond
             "small_amounts_high_plafond": False,
             "successive_cheques_same_sender": False,
             "successive_cheques_same_sender_increasing": False,
@@ -352,8 +354,13 @@ def analyze_transaction(data):
                 result["analysis"]["periodic_high_transactions"] = True
                 result["potential_customer"] = True
         
+        # Vérification si le montant dépasse le plafond
+        if montant > plafond and plafond > 0:  # Ensure plafond is positive to avoid division issues
+            result["analysis"]["amount_exceeds_plafond"] = True
+            result["fraud_risk"] = True
+        
         # Autres règles de fraude
-        if montant > 0.9 * plafond:
+        if montant > 0.9 * plafond and not result["analysis"]["amount_exceeds_plafond"]:
             result["analysis"]["near_plafond"] = True
             result["fraud_risk"] = True
         
@@ -365,6 +372,7 @@ def analyze_transaction(data):
         logging.error(f"Error in analyze_transaction: {str(e)}")
     
     return result
+
 def preprocess_image(image):
     try:
         img = np.array(image.convert('RGB'))
@@ -433,8 +441,8 @@ for d in [upload_directory, signature_directory, cheque_directory]:
         logging.info(f"Created directory: {d}")
 
 # Initialize session state
-if 'customer' not in st.session_state:
-    st.session_state.customer = []
+if 'contact' not in st.session_state:
+    st.session_state.contact = []
 if 'cheque_data' not in st.session_state:
     st.session_state.cheque_data = {}
 if 'transaction_history' not in st.session_state:
@@ -559,7 +567,7 @@ if st.session_state.nav_page == "Upload":
                         logging.warning("Failed to save transaction to database")
                     
                     analysis = analyze_transaction(data)
-                    st.session_state.customer.append({**data, **{"analysis": analysis}})
+                    st.session_state.contact.append({**data, **{"analysis": analysis}})
                     
                     customer_explanation = ""
                     fraud_explanation = ""
@@ -574,6 +582,8 @@ if st.session_state.nav_page == "Upload":
                     
                     if analysis["fraud_risk"]:
                         fraud_explanation += "<li><strong>Why Fraud Risk?</strong> This transaction meets the following criteria:</li>"
+                        if analysis["analysis"].get("amount_exceeds_plafond", False):
+                            fraud_explanation += "<ul><li style='color: red; font-weight: bold;'>🚨 The amount exceeds the plafond.</li></ul>"
                         if analysis["analysis"].get("near_plafond", False):
                             fraud_explanation += "<ul><li>Amount > 90% of Plafond.</li></ul>"
                         if analysis["analysis"].get("small_amounts_high_plafond", False):
@@ -595,7 +605,7 @@ if st.session_state.nav_page == "Upload":
                             <li><strong>🏦 Bank:</strong> {bank}</li>
                             <li><strong>🎯 Potential Customer:</strong> {'Yes' if analysis['potential_customer'] else 'No'}</li>
                             {customer_explanation if customer_explanation else '<li>No specific criteria met.</li>'}
-                            <li><strong>⚠️ Fraud Risk:</strong> {'Yes' if analysis['fraud_risk'] else 'No'}</li>
+                            <li><strong>⚠️ Fraud Risk:</strong> <span style="color: {'red' if analysis['fraud_risk'] else 'green'}; font-weight: bold;">{'Yes' if analysis['fraud_risk'] else 'No'}</span></li>
                             {fraud_explanation if fraud_explanation else '<li>No specific criteria met.</li>'}
                             {consecutive_explanation}
                         </ul>
@@ -681,7 +691,7 @@ if st.session_state.nav_page == "Upload":
                                         logging.warning(f"Failed to save transaction for cheque {cheque_data['num_cheque']}")
                                     
                                     analysis = analyze_transaction(cheque_data)
-                                    st.session_state.customer.append({**cheque_data, **{"analysis": analysis}})
+                                    st.session_state.contact.append({**cheque_data, **{"analysis": analysis}})
                                     st.success(f"Processed cheque {cheque_data['num_cheque']}")
                                     
                                     customer_explanation = ""
@@ -697,6 +707,8 @@ if st.session_state.nav_page == "Upload":
                                     
                                     if analysis["fraud_risk"]:
                                         fraud_explanation += "<li><strong>Why Fraud Risk?</strong> This transaction meets the following criteria:</li>"
+                                        if analysis["analysis"].get("amount_exceeds_plafond", False):
+                                            fraud_explanation += "<ul><li style='color: red; font-weight: bold;'>🚨 The amount exceeds the plafond.</li></ul>"
                                         if analysis["analysis"].get("near_plafond", False):
                                             fraud_explanation += "<ul><li>Amount > 90% of Plafond.</li></ul>"
                                         if analysis["analysis"].get("small_amounts_high_plafond", False):
@@ -718,7 +730,7 @@ if st.session_state.nav_page == "Upload":
                                             <li><strong>🏦 Bank:</strong> {bank}</li>
                                             <li><strong>🎯 Potential Customer:</strong> {'Yes' if analysis['potential_customer'] else 'No'}</li>
                                             {customer_explanation if customer_explanation else '<li>No specific criteria met.</li>'}
-                                            <li><strong>⚠️ Fraud Risk:</strong> {'Yes' if analysis['fraud_risk'] else 'No'}</li>
+                                            <li><strong>⚠️ Fraud Risk:</strong> <span style="color: {'red' if analysis['fraud_risk'] else 'green'}; font-weight: bold;">{'Yes' if analysis['fraud_risk'] else 'No'}</span></li>
                                             {fraud_explanation if fraud_explanation else '<li>No specific criteria met.</li>'}
                                             {consecutive_explanation}
                                         </ul>
@@ -740,7 +752,7 @@ if st.session_state.nav_page == "Upload":
             <div class='custom-success'>✅ <strong>Batch processing completed!</strong></div>
             """, unsafe_allow_html=True)
 
-    if st.session_state.customer:
+    if st.session_state.contact:
         center_col = st.columns([1, 2, 1])[1]
         with center_col:
             if st.button("Ready for Download", use_container_width=True):
@@ -780,10 +792,10 @@ if st.session_state.nav_page == "Upload":
                                     time.sleep(1)
                                 else:
                                     st.warning(f"Could not delete {zip_output}. Please ensure it is not in use and try again.")
-                    st.session_state.customer = []
+                    st.session_state.contact = []
                     st.session_state.cheque_data = {}
 
-                df = pd.DataFrame(st.session_state.customer)
+                df = pd.DataFrame(st.session_state.contact)
                 excel_file_name = 'cheque_table.xlsx'
                 df.to_excel(excel_file_name, index=False)
                 
@@ -822,7 +834,7 @@ elif st.session_state.nav_page == "Homepage":
             <p>Parse RIBs, sender/receiver names, amounts, dates, and plafond with high accuracy.</p>
         </div>
         <div class="feature-box">
-            <img src="https://img.icons8.com/ios/50/1565c0/save--v1.png"/>
+            <img src="https://img.icons8.com/50/1565c0/save--v1.png"/>
             <h4>Download Results</h4>
             <p>Get structured output as Excel files with cheque and signature images.</p>
         </div>
@@ -834,7 +846,7 @@ elif st.session_state.nav_page == "Homepage":
     </div>
     <div style="display: flex; justify-content: center; margin-top: 3rem;">
         <div style="background: linear-gradient(135deg, #e3f2fd, #ffffff); padding: 2.5rem 2rem; border-radius: 20px; max-width: 850px; text-align: center; box-shadow: 0 10px 24px rgba(21, 101, 192, 0.15); border: 1px solid #bbdefb;">
-            <img src="https://img.icons8.com/color/96/money-transfer.png" width="80" style="margin-bottom: 1rem;">
+            <img src="https://img.icons8.com/80/money.png" width="80" style="margin-bottom: 1rem;">
             <h3 style="color: #1565c0; font-size: 1.7rem; font-weight: 700;">Intelligent Cheque Processing</h3>
             <p style="font-size: 1.1rem; color: #1f2937; line-height: 1.6;">Our system is powered by state-of-the-art AI models designed to handle cheque formats, extract fields, and assist in digitizing banking workflows.<br>No manual input, no errors — just pure automation.</p>
         </div>
@@ -853,16 +865,16 @@ elif st.session_state.nav_page == "Homepage":
                 st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("## 🤖 Ask About Cheque Book AI")
-    user_input = st.chat_input("Ask me about this platform or cheque transactions...")
+    user_input = st.text_input("Ask me about this platform or cheque transactions...")
     if user_input:
         st.session_state.chat_history.append(("user", user_input))
         bot_response = query_llama(user_input)
         st.session_state.chat_history.append(("bot", bot_response))
     for role, msg in st.session_state.chat_history:
         if role == "user":
-            st.chat_message("user").write(msg)
+            st.write("User: " + msg)
         else:
-            st.chat_message("assistant").write(msg)
+            st.write("Assistant: " + msg)
 
 # Page: Contact
 elif st.session_state.nav_page == "Contact":
@@ -873,14 +885,18 @@ elif st.session_state.nav_page == "Contact":
         st.session_state.contact_email = ""
         st.session_state.contact_message = ""
         st.session_state.contact_submitted = False
-    if "contact_name" not in st.session_state: st.session_state.contact_name = ""
-    if "contact_email" not in st.session_state: st.session_state.contact_email = ""
-    if "contact_message" not in st.session_state: st.session_state.contact_message = ""
-    if "contact_submitted" not in st.session_state: st.session_state.contact_submitted = False
+    if "contact_name" not in st.session_state.contact:
+        st.session_state.contact_name = ""
+    if "contact_email" not in st.session_state.contact:
+        st.session_state.contact_email = ""
+    if "contact_message" not in st.session_state.contact:
+        st.session_state.contact_message = ""
+    if "contact_submitted" not in st.session_state.contact:
+        st.session_state.contact_submitted = False
     if st.session_state.contact_submitted:
         st.success("✅ Message sent successfully!")
         reset_form()
-    with st.form("contact_form"):
+    with st.form_submit_button("contact_form"):
         st.markdown('<label style="font-weight:600;font-size:1.05rem;color:#0d47a1;">👤 Your Name</label>', unsafe_allow_html=True)
         name = st.text_input("", value=st.session_state.contact_name, key="contact_name")
         st.markdown('<label style="font-weight:600;font-size:1.05rem;color:#0d47a1;">📧 Your Email</label>', unsafe_allow_html=True)
@@ -941,12 +957,14 @@ elif st.session_state.nav_page == "Transactions":
                 
                 if analysis["fraud_risk"]:
                     fraud_explanation += "<li><strong>Why Fraud Risk?</strong> This transaction meets the following criteria:</li>"
+                    if analysis["analysis"].get("amount_exceeds_plafond", False):
+                        fraud_explanation += "<ul><li style='color: red; font-weight: bold;'>🚨 The amount exceeds the plafond.</li></ul>"
                     if analysis["analysis"].get("near_plafond", False):
                         fraud_explanation += "<ul><li>Amount > 90% of Plafond.</li></ul>"
                     if analysis["analysis"].get("small_amounts_high_plafond", False):
                         fraud_explanation += "<ul><li>Plafond > 100,000, Amount < 1,000, and >5 transactions in history.</li></ul>"
                     if analysis["analysis"].get("successive_cheques_same_sender_increasing", False):
-                        fraud_explanation += "<ul><li>Successive cheques (>1) from the same sender with consecutive numbers and increasing amounts.</li></ul>"
+                        fraud_explanation += "<ul><li>Successive cheques (>1) from the same sender cheque with consecutive cheque numbers and increasing amounts.</li></ul>"
                 
                 if analysis["analysis"].get("consecutive_cheque_numbers", False):
                     consecutive_explanation += "<li><strong>⚠️ Transaction précédente avec numéro consécutif détectée :</strong></li>"
@@ -970,7 +988,7 @@ elif st.session_state.nav_page == "Transactions":
                         <li><strong>🏦 Plafond:</strong> {row['plafond']}</li>
                         <li><strong>🎯 Potential Customer:</strong> {'Yes' if analysis['potential_customer'] else 'No'}</li>
                         {customer_explanation if customer_explanation else '<li>No specific criteria met.</li>'}
-                        <li><strong>⚠️ Fraud Risk:</strong> {'Yes' if analysis['fraud_risk'] else 'No'}</li>
+                        <li><strong>⚠️ Fraud Risk:</strong> <span style="color: {'red' if analysis['fraud_risk'] else 'green'}; font-weight: bold;">{'Yes' if analysis['fraud_risk'] else 'No'}</span></li>
                         {fraud_explanation if fraud_explanation else '<li>No specific criteria met.</li>'}
                         {consecutive_explanation}
                     </ul>
