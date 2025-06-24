@@ -32,7 +32,7 @@ model = genai.GenerativeModel(model_name="gemini-2.0-flash")
 
 # System prompt for the chatbot
 system_prompt = """
-You are ChequeBot, a friendly and helpful assistant designed to assist with the Cheque Book AI platform and analyze cheque transactions. I'm here to make your experience smooth and informative—it's 10:23 PM CET on Monday, June 23, 2025, and I'm ready to assist!
+You are ChequeBot, a friendly and helpful assistant designed to assist with the Cheque Book AI platform and analyze cheque transactions. I'm here to make your experience smooth and informative—it's 10:47 PM CET on Monday, June 23, 2025, and I'm ready to assist!
 
 Here is what the platform does:
 - 📤 Upload Cheque Images (front and back or ZIP batch)
@@ -54,7 +54,7 @@ Here is what the platform does:
 - Other factors (e.g., successive_cheques_same_sender) may influence the analysis.
 
 ### Capabilities:
-- Respond warmly to greetings (e.g., "Hi!" → "Hi! How can I help you today at 10:23 PM CET on June 23, 2025?", "Hello!" → "Hello! What can I do for you this evening?").
+- Respond warmly to greetings (e.g., "Hi!" → "Hi! How can I help you today at 10:47 PM CET on June 23, 2025?", "Hello!" → "Hello! What can I do for you this evening?").
 - Answer questions about how the platform works, its benefits, or technical capabilities.
 - Analyze transaction history stored in the SQLite database ("transactions.db") and the current session data.
 - Provide details on specific cheques (e.g., RIBs, amounts, dates, plafond) based on the data available.
@@ -78,14 +78,13 @@ def query_llama(user_message):
     history_context = "Transaction History:\n" + "\n".join([f"- Cheque {row[1]}: RIB1={row[0]}, RIB2={row[2]}, Sender={row[3]}, Receiver={row[4]}, Amount={row[6]}, Plafond={row[5]}, Date={row[7]}, Bank={row[8]}" for row in history]) + "\n"
     history_context += "Current Session Data:\n" + "\n".join([f"- Cheque {c.get('num_cheque', 'N/A')}: RIB1={c.get('rib1', 'N/A')}, RIB2={c.get('rib2', 'N/A')}, Sender={c.get('nom', 'N/A')}, Receiver={c.get('nomreciver', 'N/A')}, Amount={c.get('montant', 'N/A')}, Plafond={c.get('plafond', 'N/A')}, Date={c.get('date', 'N/A')}, Analysis={c.get('analysis', {})}" for c in st.session_state.customer])
     
-    response = ollama.chat(
-        model='llama3',
-        messages=[
-            {"role": "system", "content": system_prompt + "\n" + history_context},
-            {"role": "user", "content": user_message}
-        ]
-    )
-    return response['message']['content']
+    # Combine system prompt with history context and user message
+    full_prompt = f"{system_prompt}\n{history_context}\nUser Message: {user_message}"
+    
+    # Query Gemini API
+    response = model.generate_content(full_prompt)
+    
+    return response.text
 
 # Bank codes dictionary
 BANK_CODES = {
@@ -235,7 +234,7 @@ def migrate_database():
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS transactions_new (
                 rib1 TEXT,
-                num_cheque TEXT,
+                num_cheque TEXT ,
                 rib2 TEXT,
                 nom TEXT,
                 nomreciver TEXT,
@@ -244,7 +243,7 @@ def migrate_database():
                 date TEXT,
                 bank TEXT,
                 created_at TEXT,
-                PRIMARY KEY (rib1, num_cheque)
+                PRIMARY KEY (num_cheque)
             )
         """)
         
@@ -278,7 +277,8 @@ def analyze_transaction(data):
             "small_amounts_high_plafond": False,
             "successive_cheques_same_sender": False,
             "successive_cheques_same_sender_increasing": False,
-            "consecutive_cheque_numbers": False
+            "consecutive_cheque_numbers": False,
+            "consecutive_cheque_details": []  # Stocke les détails des chèques consécutifs
         }
     }
     
@@ -293,53 +293,66 @@ def analyze_transaction(data):
         bank = get_bank_from_rib(rib1)
         result["analysis"]["bank"] = bank
         
+        # Vérification du client potentiel
         if plafond > 10000 and bank != "Attijari Bank":
             result["analysis"]["high_plafond"] = True
             if montant > 0.5 * plafond:
                 result["analysis"]["high_amount_ratio"] = True
                 result["potential_customer"] = True
         
+        # Connexion à la base de données pour récupérer l'historique
         conn = sqlite3.connect("transactions.db")
         cursor = conn.cursor()
         cursor.execute("SELECT num_cheque, montant, nom, rib2 FROM transactions WHERE rib1 = ? ORDER BY num_cheque", (rib1,))
         history = cursor.fetchall()
         conn.close()
         
-        if history and len(history) > 1 and rib2 != "Not Detected":
+        # Vérification des chèques consécutifs
+        if history and len(history) > 0 and rib2 != "Not Detected":
             # Convertir et nettoyer les numéros de chèque
             history_cheques = []
             for h in history:
                 try:
                     cleaned = ''.join(filter(str.isdigit, str(h[0])))
                     num = int(cleaned.lstrip('0')) if cleaned else 0
-                    history_cheques.append(num)
+                    history_cheques.append((num, h[0], safe_float(h[1]), h[3]))  # (num_clean, num_original, montant, rib2)
                 except:
-                    history_cheques.append(0)
+                    history_cheques.append((0, h[0], safe_float(h[1]), h[3]))
             
-            history_amounts = [safe_float(h[1]) if h[1] is not None else 0 for h in history]
-            history_rib2s = [h[3] for h in history]
+            # Nettoyer le numéro de chèque actuel
+            try:
+                cleaned_current = ''.join(filter(str.isdigit, str(num_cheque)))
+                current_num = int(cleaned_current.lstrip('0')) if cleaned_current else 0
+            except:
+                current_num = 0
             
+            history_amounts = [h[2] for h in history_cheques]
+            history_rib2s = [h[3] for h in history_cheques]
+            
+            # Vérification des numéros consécutifs et même RIB
             if all(r != "Not Detected" for r in history_rib2s) and all(r == rib2 for r in history_rib2s):
-                history_cheques.sort()
-                for i in range(len(history_cheques) - 1):
-                    current = history_cheques[i]
-                    next_cheque = history_cheques[i + 1]
-                    diff = abs(current - next_cheque)
-                    
-                    if diff == 1:  # Consecutive numbers (e.g., 001 and 002, or 002 and 001)
+                for i, (hist_num, hist_original, hist_amount, _) in enumerate(history_cheques):
+                    diff = abs(current_num - hist_num)
+                    if diff == 1:  # Numéros consécutifs (±1)
                         result["analysis"]["consecutive_cheque_numbers"] = True
                         result["analysis"]["successive_cheques_same_sender"] = True
-                        if history_amounts[i] < history_amounts[i + 1]:
+                        result["analysis"]["consecutive_cheque_details"].append({
+                            "previous_cheque": hist_original,
+                            "current_cheque": num_cheque,
+                            "difference": diff
+                        })
+                        # Activer fraud_risk dès qu'un numéro consécutif est détecté
+                        result["fraud_risk"] = True
+                        if montant > hist_amount:
                             result["analysis"]["successive_cheques_same_sender_increasing"] = True
-                            result["fraud_risk"] = True
-                        break  # Arrêter après la première séquence détectée
 
-        # Check for periodic high transactions
+        # Vérification des transactions périodiques élevées
         if len(history) > 1 and all(abs(safe_float(h[1]) - montant) < 1000 for h in history if h[1]):
             if montant > 5000:
                 result["analysis"]["periodic_high_transactions"] = True
                 result["potential_customer"] = True
         
+        # Autres règles de fraude
         if montant > 0.9 * plafond:
             result["analysis"]["near_plafond"] = True
             result["fraud_risk"] = True
@@ -486,7 +499,7 @@ if st.session_state.nav_page == "Upload":
         with center_col:
             if st.button("Extract Cheque Data", use_container_width=True):
                 try:
-                    with st.spinner("Extracting cheque data with Gemini AI..."):
+                    with st.spinner("Extracting cheque data..."):
                         response = model.generate_content([input_prompt, front_image, back_image])
                         logging.info(f"Raw Gemini response: {response.text}")
                     
@@ -550,6 +563,7 @@ if st.session_state.nav_page == "Upload":
                     
                     customer_explanation = ""
                     fraud_explanation = ""
+                    consecutive_explanation = ""
                     
                     if analysis["potential_customer"]:
                         customer_explanation += "<li><strong>Why Potential Customer?</strong> This transaction meets the following criteria:</li>"
@@ -567,6 +581,13 @@ if st.session_state.nav_page == "Upload":
                         if analysis["analysis"].get("successive_cheques_same_sender_increasing", False):
                             fraud_explanation += "<ul><li>Successive cheques (>1) from the same sender with consecutive numbers and increasing amounts.</li></ul>"
                     
+                    if analysis["analysis"].get("consecutive_cheque_numbers", False):
+                        consecutive_explanation += "<li><strong>⚠️ Transaction précédente avec numéro consécutif détectée :</strong></li>"
+                        for detail in analysis["analysis"].get("consecutive_cheque_details", []):
+                            consecutive_explanation += f"<ul><li>Chèque actuel : {detail['current_cheque']}, Chèque précédent : {detail['previous_cheque']} (différence : ±{detail['difference']}).</li></ul>"
+                    else:
+                        consecutive_explanation += "<li><strong>✅ Aucun chèque consécutif détecté.</strong></li>"
+                    
                     st.markdown(f"""
                     <div class="cheque-box">
                         <h3>🔍 Transaction Analysis</h3>
@@ -576,6 +597,7 @@ if st.session_state.nav_page == "Upload":
                             {customer_explanation if customer_explanation else '<li>No specific criteria met.</li>'}
                             <li><strong>⚠️ Fraud Risk:</strong> {'Yes' if analysis['fraud_risk'] else 'No'}</li>
                             {fraud_explanation if fraud_explanation else '<li>No specific criteria met.</li>'}
+                            {consecutive_explanation}
                         </ul>
                     </div>
                     """, unsafe_allow_html=True)
@@ -661,6 +683,47 @@ if st.session_state.nav_page == "Upload":
                                     analysis = analyze_transaction(cheque_data)
                                     st.session_state.customer.append({**cheque_data, **{"analysis": analysis}})
                                     st.success(f"Processed cheque {cheque_data['num_cheque']}")
+                                    
+                                    customer_explanation = ""
+                                    fraud_explanation = ""
+                                    consecutive_explanation = ""
+                                    
+                                    if analysis["potential_customer"]:
+                                        customer_explanation += "<li><strong>Why Potential Customer?</strong> This transaction meets the following criteria:</li>"
+                                        if analysis["analysis"].get("high_plafond", False) and analysis["analysis"].get("high_amount_ratio", False):
+                                            customer_explanation += "<ul><li>Plafond > 10,000 and Amount > 50% of Plafond.</li></ul>"
+                                        if analysis["analysis"].get("periodic_high_transactions", False):
+                                            customer_explanation += "<ul><li>Periodic transactions (>1) with Amount > 5,000.</li></ul>"
+                                    
+                                    if analysis["fraud_risk"]:
+                                        fraud_explanation += "<li><strong>Why Fraud Risk?</strong> This transaction meets the following criteria:</li>"
+                                        if analysis["analysis"].get("near_plafond", False):
+                                            fraud_explanation += "<ul><li>Amount > 90% of Plafond.</li></ul>"
+                                        if analysis["analysis"].get("small_amounts_high_plafond", False):
+                                            fraud_explanation += "<ul><li>Plafond > 100,000, Amount < 1,000, and >5 transactions in history.</li></ul>"
+                                        if analysis["analysis"].get("successive_cheques_same_sender_increasing", False):
+                                            fraud_explanation += "<ul><li>Successive cheques (>1) from the same sender with consecutive numbers and increasing amounts.</li></ul>"
+                                    
+                                    if analysis["analysis"].get("consecutive_cheque_numbers", False):
+                                        consecutive_explanation += "<li><strong>⚠️ Transaction précédente avec numéro consécutif détectée :</strong></li>"
+                                        for detail in analysis["analysis"].get("consecutive_cheque_details", []):
+                                            consecutive_explanation += f"<ul><li>Chèque actuel : {detail['current_cheque']}, Chèque précédent : {detail['previous_cheque']} (différence : ±{detail['difference']}).</li></ul>"
+                                    else:
+                                        consecutive_explanation += "<li><strong>✅ Aucun chèque consécutif détecté.</strong></li>"
+                                    
+                                    st.markdown(f"""
+                                    <div class="cheque-box">
+                                        <h3>🔍 Transaction Analysis for Cheque {cheque_data['num_cheque']}</h3>
+                                        <ul>
+                                            <li><strong>🏦 Bank:</strong> {bank}</li>
+                                            <li><strong>🎯 Potential Customer:</strong> {'Yes' if analysis['potential_customer'] else 'No'}</li>
+                                            {customer_explanation if customer_explanation else '<li>No specific criteria met.</li>'}
+                                            <li><strong>⚠️ Fraud Risk:</strong> {'Yes' if analysis['fraud_risk'] else 'No'}</li>
+                                            {fraud_explanation if fraud_explanation else '<li>No specific criteria met.</li>'}
+                                            {consecutive_explanation}
+                                        </ul>
+                                    </div>
+                                    """, unsafe_allow_html=True)
                                 else:
                                     st.warning(f"Skipped {base_name} - No RIB detected")
                             except json.JSONDecodeError:
@@ -867,6 +930,7 @@ elif st.session_state.nav_page == "Transactions":
                 
                 customer_explanation = ""
                 fraud_explanation = ""
+                consecutive_explanation = ""
                 
                 if analysis["potential_customer"]:
                     customer_explanation += "<li><strong>Why Potential Customer?</strong> This transaction meets the following criteria:</li>"
@@ -883,6 +947,13 @@ elif st.session_state.nav_page == "Transactions":
                         fraud_explanation += "<ul><li>Plafond > 100,000, Amount < 1,000, and >5 transactions in history.</li></ul>"
                     if analysis["analysis"].get("successive_cheques_same_sender_increasing", False):
                         fraud_explanation += "<ul><li>Successive cheques (>1) from the same sender with consecutive numbers and increasing amounts.</li></ul>"
+                
+                if analysis["analysis"].get("consecutive_cheque_numbers", False):
+                    consecutive_explanation += "<li><strong>⚠️ Transaction précédente avec numéro consécutif détectée :</strong></li>"
+                    for detail in analysis["analysis"].get("consecutive_cheque_details", []):
+                        consecutive_explanation += f"<ul><li>Chèque actuel : {detail['current_cheque']}, Chèque précédent : {detail['previous_cheque']} (différence : ±{detail['difference']}).</li></ul>"
+                else:
+                    consecutive_explanation += "<li><strong>✅ Aucun chèque consécutif détecté.</strong></li>"
                 
                 st.markdown(f"""
                 <div class="cheque-box">
@@ -901,6 +972,7 @@ elif st.session_state.nav_page == "Transactions":
                         {customer_explanation if customer_explanation else '<li>No specific criteria met.</li>'}
                         <li><strong>⚠️ Fraud Risk:</strong> {'Yes' if analysis['fraud_risk'] else 'No'}</li>
                         {fraud_explanation if fraud_explanation else '<li>No specific criteria met.</li>'}
+                        {consecutive_explanation}
                     </ul>
                 </div>
                 """, unsafe_allow_html=True)

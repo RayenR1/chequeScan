@@ -78,14 +78,13 @@ def query_llama(user_message):
     history_context = "Transaction History:\n" + "\n".join([f"- Cheque {row[1]}: RIB1={row[0]}, RIB2={row[2]}, Sender={row[3]}, Receiver={row[4]}, Amount={row[6]}, Plafond={row[5]}, Date={row[7]}, Bank={row[8]}" for row in history]) + "\n"
     history_context += "Current Session Data:\n" + "\n".join([f"- Cheque {c.get('num_cheque', 'N/A')}: RIB1={c.get('rib1', 'N/A')}, RIB2={c.get('rib2', 'N/A')}, Sender={c.get('nom', 'N/A')}, Receiver={c.get('nomreciver', 'N/A')}, Amount={c.get('montant', 'N/A')}, Plafond={c.get('plafond', 'N/A')}, Date={c.get('date', 'N/A')}, Analysis={c.get('analysis', {})}" for c in st.session_state.customer])
     
-    response = ollama.chat(
-        model='llama3',
-        messages=[
-            {"role": "system", "content": system_prompt + "\n" + history_context},
-            {"role": "user", "content": user_message}
-        ]
-    )
-    return response['message']['content']
+    # Combine system prompt with history context and user message
+    full_prompt = f"{system_prompt}\n{history_context}\nUser Message: {user_message}"
+    
+    # Query Gemini API
+    response = model.generate_content(full_prompt)
+    
+    return response.text
 
 # Bank codes dictionary
 BANK_CODES = {
@@ -235,7 +234,7 @@ def migrate_database():
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS transactions_new (
                 rib1 TEXT,
-                num_cheque TEXT,
+                num_cheque TEXT ,
                 rib2 TEXT,
                 nom TEXT,
                 nomreciver TEXT,
@@ -244,7 +243,7 @@ def migrate_database():
                 date TEXT,
                 bank TEXT,
                 created_at TEXT,
-                PRIMARY KEY (rib1, num_cheque)
+                PRIMARY KEY (num_cheque)
             )
         """)
         
@@ -294,18 +293,21 @@ def analyze_transaction(data):
         bank = get_bank_from_rib(rib1)
         result["analysis"]["bank"] = bank
         
+        # Vérification du client potentiel
         if plafond > 10000 and bank != "Attijari Bank":
             result["analysis"]["high_plafond"] = True
             if montant > 0.5 * plafond:
                 result["analysis"]["high_amount_ratio"] = True
                 result["potential_customer"] = True
         
+        # Connexion à la base de données pour récupérer l'historique
         conn = sqlite3.connect("transactions.db")
         cursor = conn.cursor()
         cursor.execute("SELECT num_cheque, montant, nom, rib2 FROM transactions WHERE rib1 = ? ORDER BY num_cheque", (rib1,))
         history = cursor.fetchall()
         conn.close()
         
+        # Vérification des chèques consécutifs
         if history and len(history) > 0 and rib2 != "Not Detected":
             # Convertir et nettoyer les numéros de chèque
             history_cheques = []
@@ -327,6 +329,7 @@ def analyze_transaction(data):
             history_amounts = [h[2] for h in history_cheques]
             history_rib2s = [h[3] for h in history_cheques]
             
+            # Vérification des numéros consécutifs et même RIB
             if all(r != "Not Detected" for r in history_rib2s) and all(r == rib2 for r in history_rib2s):
                 for i, (hist_num, hist_original, hist_amount, _) in enumerate(history_cheques):
                     diff = abs(current_num - hist_num)
@@ -338,16 +341,18 @@ def analyze_transaction(data):
                             "current_cheque": num_cheque,
                             "difference": diff
                         })
+                        # Activer fraud_risk dès qu'un numéro consécutif est détecté
+                        result["fraud_risk"] = True
                         if montant > hist_amount:
                             result["analysis"]["successive_cheques_same_sender_increasing"] = True
-                            result["fraud_risk"] = True
 
-        # Check for periodic high transactions
+        # Vérification des transactions périodiques élevées
         if len(history) > 1 and all(abs(safe_float(h[1]) - montant) < 1000 for h in history if h[1]):
             if montant > 5000:
                 result["analysis"]["periodic_high_transactions"] = True
                 result["potential_customer"] = True
         
+        # Autres règles de fraude
         if montant > 0.9 * plafond:
             result["analysis"]["near_plafond"] = True
             result["fraud_risk"] = True
@@ -360,7 +365,6 @@ def analyze_transaction(data):
         logging.error(f"Error in analyze_transaction: {str(e)}")
     
     return result
-
 def preprocess_image(image):
     try:
         img = np.array(image.convert('RGB'))
@@ -495,7 +499,7 @@ if st.session_state.nav_page == "Upload":
         with center_col:
             if st.button("Extract Cheque Data", use_container_width=True):
                 try:
-                    with st.spinner("Extracting cheque data with Gemini AI..."):
+                    with st.spinner("Extracting cheque data..."):
                         response = model.generate_content([input_prompt, front_image, back_image])
                         logging.info(f"Raw Gemini response: {response.text}")
                     
