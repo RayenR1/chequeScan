@@ -2478,3 +2478,93 @@ violations {
 2025-06-24 13:20:18,125 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
 2025-06-24 13:20:41,001 - INFO - Database migration completed successfully
 2025-06-24 13:20:41,066 - INFO - Database migration completed successfully
+2025-06-24 23:03:02,032 - INFO - Database migration completed successfully
+2025-06-24 23:03:05,293 - INFO - Database migration completed successfully
+2025-06-24 23:03:12,220 - INFO - Database migration completed successfully
+2025-06-24 23:03:19,430 - INFO - Database migration completed successfully
+2025-06-24 23:03:22,514 - INFO - Database migration completed successfully
+2025-06-24 23:03:29,018 - INFO - Raw Gemini response: ```json
+{
+  "Rib1": "01 006 0351112 0019 58 12",
+  "Rib2": "1234567891234567891",
+  "nom": "ASSOCIATION DE DEVELOPPEMENT INTEGR",
+  "nomreciver": "Rayen Hlassi",
+  "plafond": "1000",
+  "num_cheque": "0838299",
+  "montant": "1000",
+  "date": "30/11/2025"
+}
+```
+2025-06-24 23:03:29,022 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:03:29,088 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:03:29,105 - INFO - Saving transaction - RIB1: 01 006 0351112 0019 58 12, Cheque: 0838299, Plafond: 1000
+2025-06-24 23:03:29,106 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:29,106 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:29,118 - INFO - Transaction saved successfully: RIB1=01 006 0351112 0019 58 12, Cheque=0838299, Plafond=1000
+2025-06-24 23:03:29,118 - INFO - Transaction saved to database successfully
+2025-06-24 23:03:29,118 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:29,118 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:29,118 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:03:38,949 - INFO - Database migration completed successfully
+2025-06-24 23:03:45,786 - INFO - Database migration completed successfully
+2025-06-24 23:03:48,102 - INFO - Database migration completed successfully
+2025-06-24 23:03:54,015 - INFO - Raw Gemini response: ```json
+{
+  "Rib1": "01 006 0351112 0019 58 12",
+  "Rib2": "1234567891234567891",
+  "nom": "ASSOCIATION DE DEVELOPPEMENT INTEGR",
+  "nomreciver": "Rayan tlassi",
+  "plafond": "1000",
+  "num_cheque": "0838300",
+  "montant": "1000",
+  "date": "30/11/2025"
+}
+```
+2025-06-24 23:03:54,017 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:03:54,064 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:03:54,064 - INFO - Saving transaction - RIB1: 01 006 0351112 0019 58 12, Cheque: 0838300, Plafond: 1000
+2025-06-24 23:03:54,064 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:54,064 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:54,075 - INFO - Transaction saved successfully: RIB1=01 006 0351112 0019 58 12, Cheque=0838300, Plafond=1000
+2025-06-24 23:03:54,075 - INFO - Transaction saved to database successfully
+2025-06-24 23:03:54,075 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:54,075 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:03:54,075 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:08:40,224 - INFO - Database migration completed successfully
+2025-06-24 23:08:40,279 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:08:40,286 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:08:42,989 - INFO - Database migration completed successfully
+2025-06-24 23:09:02,383 - INFO - Database migration completed successfully
+2025-06-24 23:09:06,721 - INFO - Database migration completed successfully
+2025-06-24 23:09:10,596 - INFO - Database migration completed successfully
+2025-06-24 23:09:13,912 - INFO - Raw Gemini response: ```json
+{
+  "Rib1": "01 006 035112 0019 58 12",
+  "Rib2": "01 006 035112 0018 46",
+  "nom": "ASSOCIATION DE DEVELOPPEMENT INTEGR",
+  "nomreciver": "Ons Haani",
+  "plafond": "1000",
+  "num_cheque": "0501069",
+  "montant": "850.03",
+  "date": "31/08/2025"
+}
+```
+2025-06-24 23:09:13,915 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:09:13,952 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:09:13,952 - INFO - Saving transaction - RIB1: 01 006 035112 0019 58 12, Cheque: 0501069, Plafond: 1000
+2025-06-24 23:09:13,952 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:09:13,953 - INFO - Converting string to float: '850.03' -> '850.03'
+2025-06-24 23:09:14,034 - INFO - Transaction saved successfully: RIB1=01 006 035112 0019 58 12, Cheque=0501069, Plafond=1000
+2025-06-24 23:09:14,034 - INFO - Transaction saved to database successfully
+2025-06-24 23:09:14,034 - INFO - Converting string to float: '1000' -> '1000'
+2025-06-24 23:09:14,034 - INFO - Converting string to float: '850.03' -> '850.03'
+2025-06-24 23:09:14,034 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:09:19,844 - INFO - Database migration completed successfully
+2025-06-24 23:09:19,864 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:09:19,868 - INFO - RIB: 01 006 0351112 0019 58 12 \u2192 Cleaned: 01006035111200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:09:19,872 - INFO - RIB: 01 006 035112 0019 58 12 \u2192 Cleaned: 0100603511200195812 \u2192 Bank: Arab Tunisian Bank (ATB)
+2025-06-24 23:11:25,654 - INFO - Database migration completed successfully
+2025-06-25 00:10:40,381 - INFO - Database migration completed successfully
+2025-06-25 00:10:44,292 - INFO - Database migration completed successfully
+2025-06-25 00:11:32,763 - INFO - Database migration completed successfully
+2025-06-25 00:11:34,429 - INFO - Database migration completed successfully

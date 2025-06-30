@@ -880,23 +880,30 @@ elif st.session_state.nav_page == "Homepage":
 elif st.session_state.nav_page == "Contact":
     st.markdown("## 📬 Contact Us")
     st.write("Fill in the form below to leave us a message.")
+    
     def reset_form():
         st.session_state.contact_name = ""
         st.session_state.contact_email = ""
         st.session_state.contact_message = ""
         st.session_state.contact_submitted = False
-    if "contact_name" not in st.session_state.contact:
+    
+    # Initialize session state variables
+    if "contact_name" not in st.session_state:
         st.session_state.contact_name = ""
-    if "contact_email" not in st.session_state.contact:
+    if "contact_email" not in st.session_state:
         st.session_state.contact_email = ""
-    if "contact_message" not in st.session_state.contact:
+    if "contact_message" not in st.session_state:
         st.session_state.contact_message = ""
-    if "contact_submitted" not in st.session_state.contact:
+    if "contact_submitted" not in st.session_state:
         st.session_state.contact_submitted = False
+    
+    # Display success message if form was submitted
     if st.session_state.contact_submitted:
         st.success("✅ Message sent successfully!")
         reset_form()
-    with st.form_submit_button("contact_form"):
+    
+    # Create the form
+    with st.form(key="contact_form"):
         st.markdown('<label style="font-weight:600;font-size:1.05rem;color:#0d47a1;">👤 Your Name</label>', unsafe_allow_html=True)
         name = st.text_input("", value=st.session_state.contact_name, key="contact_name")
         st.markdown('<label style="font-weight:600;font-size:1.05rem;color:#0d47a1;">📧 Your Email</label>', unsafe_allow_html=True)
@@ -904,16 +911,17 @@ elif st.session_state.nav_page == "Contact":
         st.markdown('<label style="font-weight:600;font-size:1.05rem;color:#0d47a1;">💬 Your Message</label>', unsafe_allow_html=True)
         message = st.text_area("", value=st.session_state.contact_message, key="contact_message")
         submitted = st.form_submit_button("📨 Send Message")
-    if submitted:
-        if not name or not email or not message:
-            st.warning("⚠️ Please fill out all fields.")
-        else:
-            with open("contact_messages.csv", "a", newline="", encoding="utf-8") as f:
-                import csv
-                writer = csv.writer(f)
-                writer.writerow([datetime.now().isoformat(), name, email, message])
-            st.session_state.contact_submitted = True
-            st.rerun()
+        
+        if submitted:
+            if not name or not email or not message:
+                st.warning("⚠️ Please fill out all fields.")
+            else:
+                with open("contact_messages.csv", "a", newline="", encoding="utf-8") as f:
+                    import csv
+                    writer = csv.writer(f)
+                    writer.writerow([datetime.now().isoformat(), name, email, message])
+                st.session_state.contact_submitted = True
+                st.rerun()
 
 # Page: Transactions
 elif st.session_state.nav_page == "Transactions":
